@@ -16,6 +16,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import me.ryanhamshire.GriefPrevention.DataStore;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -131,6 +133,8 @@ public class DynmapPlugin extends JavaPlugin implements DynmapAPI {
     private BukkitWorld last_bworld;
     
     private BukkitVersionHelper helper;
+    GriefPrevention gp = (GriefPrevention)Bukkit.getPluginManager().getPlugin("GriefPrevention");
+    DataStore ds = gp.dataStore;
     
     private final BukkitWorld getWorldByName(String name) {
         if((last_world != null) && (last_world.getName().equals(name))) {
@@ -303,6 +307,16 @@ public class DynmapPlugin extends JavaPlugin implements DynmapAPI {
                         @EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
                         public void onPlayerChat(AsyncPlayerChatEvent evt) {
                             final Player p = evt.getPlayer();
+
+                            //If a player is softmuted in GriefPrevention, ignore
+                            if (ds.isSoftMuted(p.getUniqueId()))
+                                return;
+
+                            //If a player's spam is muted by GriefPrevention, ignore
+                            if (Bukkit.getOnlinePlayers().size() > 1) //Impossible to tell if GP is filtering spam when only one player is on
+                                if (evt.getRecipients().size() < 2)
+                                    return;
+
                             final String msg = evt.getMessage();
                             getServer().getScheduler().scheduleSyncDelayedTask(DynmapPlugin.this, new Runnable() {
                                 public void run() {

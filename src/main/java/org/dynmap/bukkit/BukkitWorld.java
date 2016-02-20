@@ -243,7 +243,6 @@ public class BukkitWorld extends DynmapWorld {
         }
         return cnt;
     }
-    @Override
     public Polygon getWorldBorder() {
         return DynmapPlugin.plugin.getWorldBorder(world);
     }
