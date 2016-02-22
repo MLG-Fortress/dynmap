@@ -133,8 +133,7 @@ public class DynmapPlugin extends JavaPlugin implements DynmapAPI {
     private BukkitWorld last_bworld;
     
     private BukkitVersionHelper helper;
-    GriefPrevention gp = (GriefPrevention)Bukkit.getPluginManager().getPlugin("GriefPrevention");
-    DataStore ds = gp.dataStore;
+    DataStore ds;
     
     private final BukkitWorld getWorldByName(String name) {
         if((last_world != null) && (last_world.getName().equals(name))) {
@@ -868,6 +867,9 @@ public class DynmapPlugin extends JavaPlugin implements DynmapAPI {
                 processTick();
             }
         }, 1, 1);
+
+        GriefPrevention gp = (GriefPrevention)Bukkit.getPluginManager().getPlugin("GriefPrevention");
+        ds = gp.dataStore;
     }
     
     private boolean readyToEnable() {
